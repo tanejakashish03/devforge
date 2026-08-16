@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}
+DevForge Dashboard
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <h1>Developer Platform</h1>
+
+    <p>
+        Automate application creation, deployment and infrastructure.
+    </p>
+
+</section>
+
+
+<section class="stats">
+
+    <div class="card">
+        <h3>Projects</h3>
+        <p>{{ project_count }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Deployments</h3>
+        <p>{{ deployment_count }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Healthy</h3>
+        <p>{{ healthy_count }}</p>
+    </div>
+
+</section>
+
+
+<section class="projects-section">
+
+    <div class="section-header">
+
+        <h2>Projects</h2>
+
+        <a
+            class="button"
+            href="{{ url_for('projects.create_project') }}"
+        >
+            + Create New Project
+        </a>
+
+    </div>
+
+
+    {% if projects %}
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Project</th>
+                    <th>Application</th>
+                    <th>Environment</th>
+                    <th>Status</th>
+                    <th>Version</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for project in projects %}
+
+                <tr>
+
+                    <td>{{ project.name }}</td>
+
+                    <td>{{ project.application }}</td>
+
+                    <td>{{ project.environment }}</td>
+
+                    <td>
+                        <span class="status">
+                            {{ project.status }}
+                        </span>
+                    </td>
+
+                    <td>{{ project.version }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <h3>No projects yet</h3>
+
+            <p>
+                Create your first application using DevForge.
+            </p>
+
+            <a
+                class="button"
+                href="{{ url_for('projects.create_project') }}"
+            >
+                Create Project
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
