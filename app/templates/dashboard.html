@@ -65,6 +65,7 @@ DevForge Dashboard
                     <th>Environment</th>
                     <th>Status</th>
                     <th>Version</th>
+                    <th>GitHub</th>
                 </tr>
 
             </thead>
@@ -88,6 +89,34 @@ DevForge Dashboard
                     </td>
 
                     <td>{{ project.version }}</td>
+
+                    <td>
+
+                        {% if project.github_repo_url %}
+
+                            <a
+                                class="button"
+                                href="{{ project.github_repo_url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Open Repository
+                            </a>
+
+                        {% else %}
+
+                            <form
+                                method="POST"
+                                action="{{ url_for('projects.create_github_repository', project_id=project.id) }}"
+                            >
+                                <button type="submit" class="button">
+                                    Create Repository
+                                </button>
+                            </form>
+
+                        {% endif %}
+
+                    </td>
 
                 </tr>
 
@@ -119,5 +148,19 @@ DevForge Dashboard
     {% endif %}
 
 </section>
+
+{% if request.args.get("github") == "created" %}
+
+<div class="card">
+    GitHub repository created successfully.
+</div>
+
+{% elif request.args.get("github") == "exists" %}
+
+<div class="card">
+    This project already has a GitHub repository.
+</div>
+
+{% endif %}
 
 {% endblock %}

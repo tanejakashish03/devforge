@@ -16,6 +16,16 @@ class Project(db.Model):
         unique=True
     )
 
+    github_repo_id = db.Column(
+    db.BigInteger,
+    nullable=True
+    )
+
+    github_repo_url = db.Column(
+        db.String(500),
+        nullable=True
+    )
+
     application = db.Column(
         db.String(50),
         nullable=False
