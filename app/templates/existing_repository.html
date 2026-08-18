@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Already Exists - DevForge</title>
+</head>
+
+<body>
+
+    <h1>Repository Already Exists</h1>
+
+    <p>
+        A GitHub repository named
+        <strong>{{ project.repository_name }}</strong>
+        already exists on your GitHub account.
+    </p>
+
+    <p>
+        <strong>DevForge has not linked or modified this repository.</strong>
+    </p>
+
+    <p>
+        You can inspect the existing repository before deciding what to do.
+    </p>
+
+    <p>
+        <a
+            href="{{ repository.html_url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Open Existing Repository
+        </a>
+    </p>
+
+    <hr>
+
+    <h2>What would you like to do?</h2>
+
+    <form
+        method="POST"
+        action="{{ url_for(
+            'projects.link_existing_repository',
+            project_id=project.id
+        ) }}"
+    >
+        <button type="submit">
+            Link Repository to DevForge
+        </button>
+
+        <p>
+            This will associate the existing GitHub repository
+            with this DevForge project. DevForge will not overwrite
+            or upload files to the repository.
+        </p>
+    </form>
+
+    <form
+        method="POST"
+        action="{{ url_for(
+            'projects.discard_project',
+            project_id=project.id
+        ) }}"
+    >
+        <button type="submit">
+            Don't Link — Delete DevForge Project
+        </button>
+
+        <p>
+            This will remove the project from DevForge.
+            The existing GitHub repository will not be deleted
+            or modified.
+        </p>
+    </form>
+
+    <p>
+        <a href="{{ url_for('main.dashboard') }}">
+            Back to Dashboard
+        </a>
+    </p>
+
+</body>
+</html>

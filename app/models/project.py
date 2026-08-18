@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 
 from app import db
 
@@ -31,6 +31,12 @@ class Project(db.Model):
         nullable=False
     )
 
+    template_type = db.Column(
+    db.String(30),
+    nullable=False,
+    default="flask"
+    )
+    
     visibility = db.Column(
         db.String(20),
         nullable=False,
@@ -70,7 +76,7 @@ class Project(db.Model):
     created_at = db.Column(
         db.DateTime,
         nullable=False,
-        default=datetime.utcnow
+        default=lambda: datetime.now(UTC)
     )
 
     def __repr__(self):
