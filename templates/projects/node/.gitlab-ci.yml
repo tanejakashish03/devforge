@@ -1,0 +1,14 @@
+image: node:24
+
+stages:
+  - test
+
+before_script:
+  - node --version
+  - npm --version
+  - npm ci
+
+test:
+  stage: test
+  script:
+    - npm test

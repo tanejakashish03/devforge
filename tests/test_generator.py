@@ -146,3 +146,94 @@ def test_node_project_includes_ci_workflow(tmp_path):
     assert "Node CI" in workflow_content
     assert "npm ci" in workflow_content
     assert "npm test" in workflow_content
+
+
+def test_flask_project_includes_jenkins_and_gitlab_ci(tmp_path):
+    destination = tmp_path / "flask-project"
+
+    generate_project(
+        template_type="flask",
+        destination=destination,
+    )
+
+    jenkinsfile = destination / "Jenkinsfile"
+    gitlab_ci = destination / ".gitlab-ci.yml"
+
+    assert jenkinsfile.exists()
+    assert gitlab_ci.exists()
+
+    jenkins_content = jenkinsfile.read_text()
+    gitlab_content = gitlab_ci.read_text()
+
+    assert "Install Dependencies" in jenkins_content
+    assert "pytest" in jenkins_content
+
+    assert "pipeline {" in jenkins_content
+    assert "agent any" in jenkins_content
+
+    assert "python:3.12" in gitlab_content
+    assert "pytest" in gitlab_content
+
+    assert "stages:" in gitlab_content
+    assert "test:" in gitlab_content
+
+
+def test_fastapi_project_includes_jenkins_and_gitlab_ci(tmp_path):
+    destination = tmp_path / "fastapi-project"
+
+    generate_project(
+        template_type="fastapi",
+        destination=destination,
+    )
+
+    jenkinsfile = destination / "Jenkinsfile"
+    gitlab_ci = destination / ".gitlab-ci.yml"
+
+    assert jenkinsfile.exists()
+    assert gitlab_ci.exists()
+
+    jenkins_content = jenkinsfile.read_text()
+    gitlab_content = gitlab_ci.read_text()
+
+    assert "Install Dependencies" in jenkins_content
+    assert "pytest" in jenkins_content
+
+    assert "pipeline {" in jenkins_content
+    assert "agent any" in jenkins_content
+
+    assert "python:3.12" in gitlab_content
+    assert "pytest" in gitlab_content
+
+    assert "stages:" in gitlab_content
+    assert "test:" in gitlab_content
+
+
+def test_node_project_includes_jenkins_and_gitlab_ci(tmp_path):
+    destination = tmp_path / "node-project"
+
+    generate_project(
+        template_type="node",
+        destination=destination,
+    )
+
+    jenkinsfile = destination / "Jenkinsfile"
+    gitlab_ci = destination / ".gitlab-ci.yml"
+
+    assert jenkinsfile.exists()
+    assert gitlab_ci.exists()
+
+    jenkins_content = jenkinsfile.read_text()
+    gitlab_content = gitlab_ci.read_text()
+
+    assert "npm ci" in jenkins_content
+    assert "npm test" in jenkins_content
+
+    assert "pipeline {" in jenkins_content
+    assert "agent any" in jenkins_content
+
+    assert "node:24" in gitlab_content
+    assert "npm ci" in gitlab_content
+    assert "npm test" in gitlab_content
+
+    assert "stages:" in gitlab_content
+    assert "test:" in gitlab_content

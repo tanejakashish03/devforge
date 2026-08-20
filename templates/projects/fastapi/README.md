@@ -8,3 +8,13 @@ Create a virtual environment:
 
 ```bash
 python -m venv .venv
+
+## CI/CD
+
+This project includes CI configurations for:
+
+- GitHub Actions: `.github/workflows/ci.yml`
+- Jenkins: `Jenkinsfile`
+- GitLab CI: `.gitlab-ci.yml`
+
+Each pipeline installs dependencies and runs the project tests.
