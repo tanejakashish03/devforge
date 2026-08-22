@@ -13,5 +13,11 @@ pipeline {
                 sh 'npm test'
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t devforge-node:jenkins .'
+            }
+        }
     }
 }
