@@ -449,3 +449,81 @@ def test_node_project_ci_pushes_to_ghcr(tmp_path):
     assert "packages: write" in content
     assert "secrets.GITHUB_TOKEN" in content
     assert "docker push" in content
+
+
+def test_flask_project_includes_security_configuration(tmp_path):
+    destination = tmp_path / "flask-project"
+
+    generate_project(
+        template_type="flask",
+        destination=destination,
+    )
+
+    assert (destination / "sonar-project.properties").exists()
+    assert (destination / ".trivyignore").exists()
+
+    workflow = (
+        destination
+        / ".github"
+        / "workflows"
+        / "ci.yml"
+    )
+
+    workflow_content = workflow.read_text()
+
+    assert "trivy-action" in workflow_content
+    assert "scan-type: fs" in workflow_content
+    assert "CRITICAL,HIGH" in workflow_content
+    assert "exit-code: 1" in workflow_content
+
+
+def test_fastapi_project_includes_security_configuration(tmp_path):
+    destination = tmp_path / "fastapi-project"
+
+    generate_project(
+        template_type="fastapi",
+        destination=destination,
+    )
+
+    assert (destination / "sonar-project.properties").exists()
+    assert (destination / ".trivyignore").exists()
+
+    workflow = (
+        destination
+        / ".github"
+        / "workflows"
+        / "ci.yml"
+    )
+
+    workflow_content = workflow.read_text()
+
+    assert "trivy-action" in workflow_content
+    assert "scan-type: fs" in workflow_content
+    assert "CRITICAL,HIGH" in workflow_content
+    assert "exit-code: 1" in workflow_content
+
+
+def test_node_project_includes_security_configuration(tmp_path):
+    destination = tmp_path / "node-project"
+
+    generate_project(
+        template_type="node",
+        destination=destination,
+    )
+
+    assert (destination / "sonar-project.properties").exists()
+    assert (destination / ".trivyignore").exists()
+
+    workflow = (
+        destination
+        / ".github"
+        / "workflows"
+        / "ci.yml"
+    )
+
+    workflow_content = workflow.read_text()
+
+    assert "trivy-action" in workflow_content
+    assert "scan-type: fs" in workflow_content
+    assert "CRITICAL,HIGH" in workflow_content
+    assert "exit-code: 1" in workflow_content

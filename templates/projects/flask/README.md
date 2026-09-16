@@ -16,3 +16,13 @@ This project includes CI configurations for:
 - GitLab CI: `.gitlab-ci.yml`
 
 Each pipeline installs dependencies and runs the project tests.
+
+## Security
+
+This project includes automated security scanning with Trivy.
+
+### Filesystem scan
+
+```bash
+trivy fs .
+```
