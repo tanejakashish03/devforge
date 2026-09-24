@@ -1,0 +1,72 @@
+---
+- name: Configure DevForge EC2 server
+  hosts: devforge
+  become: true
+  gather_facts: true
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+
+    - name: Update apt package cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: "{{ docker_package }}"
+        state: present
+
+    - name: Install NGINX
+      ansible.builtin.apt:
+        name: "{{ nginx_package }}"
+        state: present
+
+    - name: Ensure Docker is enabled and running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Ensure NGINX is enabled and running
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Create DevForge application directory
+      ansible.builtin.file:
+        path: /opt/devforge
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Create DevForge deployment user
+      ansible.builtin.user:
+        name: devforge
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+    - name: Verify Docker service
+      ansible.builtin.command:
+        cmd: systemctl is-active docker
+      register: docker_status
+      changed_when: false
+
+    - name: Verify NGINX service
+      ansible.builtin.command:
+        cmd: systemctl is-active nginx
+      register: nginx_status
+      changed_when: false
+
+    - name: Display service status
+      ansible.builtin.debug:
+        msg:
+          - "Docker status: {{ docker_status.stdout }}"
+          - "NGINX status: {{ nginx_status.stdout }}"
+          - "Server hostname: {{ ansible_hostname }}"
+          - "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
