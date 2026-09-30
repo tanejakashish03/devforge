@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -42,7 +44,7 @@ def create_app(config=None):
     def version():
         return {
             "service": "devforge",
-            "version": "0.1.0"
+            "version": os.getenv("DEVFORGE_VERSION", "0.1.0")
         }
 
     return app
