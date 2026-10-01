@@ -25,13 +25,73 @@ DevForge Dashboard
     </div>
 
     <div class="card">
-        <h3>Deployments</h3>
-        <p>{{ deployment_count }}</p>
+        <h3>Healthy</h3>
+        <p>{{ healthy_count }}</p>
     </div>
 
     <div class="card">
-        <h3>Healthy</h3>
-        <p>{{ healthy_count }}</p>
+        <h3>DevOps Stages</h3>
+        <p>{{ pipeline_stages|length }}</p>
+    </div>
+
+</section>
+
+
+<section class="pipeline-section">
+
+    <div class="section-header">
+
+        <div>
+            <h2>DevOps Lifecycle</h2>
+
+            <p class="section-description">
+                DevForge connects application creation with
+                source control, CI/CD, security, containerization,
+                infrastructure, deployment and monitoring.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="pipeline">
+
+        {% for stage in pipeline_stages %}
+
+            <div class="pipeline-stage">
+
+                <div class="pipeline-number">
+                    {{ loop.index }}
+                </div>
+
+                <div class="pipeline-content">
+
+                    <h3>
+                        {{ stage.name }}
+                    </h3>
+
+                    <strong class="pipeline-tools">
+                        {{ stage.tools }}
+                    </strong>
+
+                    <p>
+                        {{ stage.description }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% if not loop.last %}
+
+                <div class="pipeline-arrow">
+                    ↓
+                </div>
+
+            {% endif %}
+
+        {% endfor %}
+
     </div>
 
 </section>
@@ -42,6 +102,11 @@ DevForge Dashboard
     <div class="section-header">
 
         <h2>Projects</h2>
+
+        <p class="section-description">
+            Applications created through DevForge and their current
+            source-control connection status.
+        </p>
 
         <a
             class="button"
@@ -65,7 +130,7 @@ DevForge Dashboard
                     <th>Environment</th>
                     <th>Status</th>
                     <th>Version</th>
-                    <th>GitHub</th>
+                    <th>Source Control</th>
                     <th>Actions</th>
                 </tr>
 
@@ -100,19 +165,29 @@ DevForge Dashboard
                     </td>
 
                     <td>
-
                         {% if project.github_repo_url %}
 
+                            <span class="source-status connected">
+                                Connected
+                            </span>
+
+                            <br>
+
                             <a
-                                class="button"
                                 href="{{ project.github_repo_url }}"
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                class="repository-link"
                             >
                                 Open Repository
                             </a>
 
                         {% else %}
+
+                            <span class="source-status pending">
+                                Not connected
+                            </span>
+
+                            <br>
 
                             <form
                                 method="POST"
@@ -121,18 +196,15 @@ DevForge Dashboard
                                     project_id=project.id
                                 ) }}"
                             >
-
                                 <button
                                     type="submit"
                                     class="button"
                                 >
                                     Create Repository
                                 </button>
-
                             </form>
 
                         {% endif %}
-
                     </td>
 
                     <td>

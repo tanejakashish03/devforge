@@ -139,3 +139,91 @@ td {
     border: 1px solid #d1d5db;
     border-radius: 6px;
 }
+
+.section-description {
+    margin-top: 5px;
+    color: #6b7280;
+    max-width: 800px;
+    line-height: 1.6;
+}
+
+.pipeline-section {
+    margin-bottom: 40px;
+}
+
+.pipeline {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.pipeline-stage {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.pipeline-number {
+    min-width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+}
+
+.pipeline-content h3 {
+    margin: 0 0 6px;
+}
+
+.pipeline-content p {
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+.pipeline-arrow {
+    margin: 10px 0 10px 13px;
+    color: #9ca3af;
+    font-size: 22px;
+}
+
+.pipeline-tools {
+    display: block;
+    margin-bottom: 6px;
+    color: #2563eb;
+    font-size: 14px;
+}
+
+.source-status {
+    display: inline-block;
+    margin-bottom: 6px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.source-status.connected {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.source-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.repository-link {
+    font-size: 13px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.repository-link:hover {
+    text-decoration: underline;
+}
