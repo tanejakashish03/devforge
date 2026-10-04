@@ -70,3 +70,45 @@
           - "NGINX status: {{ nginx_status.stdout }}"
           - "Server hostname: {{ ansible_hostname }}"
           - "OS: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Install git and curl
+      ansible.builtin.apt:
+        name: [git, curl]
+        state: present
+
+    - name: Let the ubuntu user run Docker
+      ansible.builtin.user:
+        name: ubuntu
+        groups: docker
+        append: true
+
+    - name: Create persistent data directory
+      ansible.builtin.file:
+        path: /opt/devforge/data
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Create env file from GITHUB_TOKEN in your shell (never stored in git)
+      ansible.builtin.copy:
+        dest: /opt/devforge/devforge.env
+        content: "GITHUB_TOKEN={{ lookup('env', 'GITHUB_TOKEN') }}\n"
+        owner: root
+        group: docker
+        mode: '0640'
+        force: false
+      when: lookup('env', 'GITHUB_TOKEN') | length > 0
+      no_log: true
+
+    - name: Fetch latest DevForge code
+      ansible.builtin.git:
+        repo: https://github.com/tanejakashish03/devforge.git
+        dest: /opt/devforge/repo
+        version: master
+        force: true
+      become_user: ubuntu
+
+    - name: Build image and start DevForge
+      ansible.builtin.command: /opt/devforge/repo/scripts/deploy.sh
+      become_user: ubuntu
