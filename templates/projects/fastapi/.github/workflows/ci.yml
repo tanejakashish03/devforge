@@ -7,6 +7,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  TRIVY_IMAGE: ghcr.io/aquasecurity/trivy:latest
 
 jobs:
   test-and-build:
@@ -26,19 +27,15 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-dev.txt
 
       - name: Run tests
         run: pytest
 
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          scan-type: fs
-          scan-ref: .
-          severity: CRITICAL,HIGH
-          exit-code: 1
-          ignore-unfixed: true
+        run: |
+          docker run --rm -v "$PWD:/src" -w /src "$TRIVY_IMAGE" \
+            fs --severity CRITICAL,HIGH --exit-code 1 --ignore-unfixed --no-progress .
 
       - name: Log in to GitHub Container Registry
         if: github.event_name == 'push'
@@ -53,15 +50,15 @@ jobs:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
         run: |
           IMAGE_NAME=$(echo "$IMAGE_NAME" | tr '[:upper:]' '[:lower:]')
-          docker build -t $REGISTRY/$IMAGE_NAME:latest .
+          docker build --pull -t $REGISTRY/$IMAGE_NAME:latest .
 
       - name: Scan Docker image with Trivy
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          severity: CRITICAL,HIGH
-          exit-code: 1
-          ignore-unfixed: true
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+        run: |
+          IMAGE_NAME=$(echo "$IMAGE_NAME" | tr '[:upper:]' '[:lower:]')
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD:/work" -w /work "$TRIVY_IMAGE" \
+            image --severity CRITICAL,HIGH --exit-code 1 --ignore-unfixed --no-progress "$REGISTRY/$IMAGE_NAME:latest"
 
       - name: Push Docker image
         if: github.event_name == 'push'

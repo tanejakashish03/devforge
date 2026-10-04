@@ -202,7 +202,17 @@ def upload_project_directory(
         ".pyo",
     }
 
-    for file_path in source_directory.rglob("*"):
+    # Upload .github files last so GitHub starts a single CI run, on a
+    # commit that already contains every project file.
+    all_files = sorted(
+        source_directory.rglob("*"),
+        key=lambda p: (
+            ".github" in p.relative_to(source_directory).parts,
+            p.as_posix(),
+        ),
+    )
+
+    for file_path in all_files:
         if not file_path.is_file():
             continue
 

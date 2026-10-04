@@ -471,10 +471,10 @@ def test_flask_project_includes_security_configuration(tmp_path):
 
     workflow_content = workflow.read_text()
 
-    assert "trivy-action" in workflow_content
-    assert "scan-type: fs" in workflow_content
+    assert "aquasecurity/trivy" in workflow_content
+    assert "fs --severity CRITICAL,HIGH" in workflow_content
     assert "CRITICAL,HIGH" in workflow_content
-    assert "exit-code: 1" in workflow_content
+    assert "--exit-code 1" in workflow_content
 
 
 def test_fastapi_project_includes_security_configuration(tmp_path):
@@ -497,10 +497,10 @@ def test_fastapi_project_includes_security_configuration(tmp_path):
 
     workflow_content = workflow.read_text()
 
-    assert "trivy-action" in workflow_content
-    assert "scan-type: fs" in workflow_content
+    assert "aquasecurity/trivy" in workflow_content
+    assert "fs --severity CRITICAL,HIGH" in workflow_content
     assert "CRITICAL,HIGH" in workflow_content
-    assert "exit-code: 1" in workflow_content
+    assert "--exit-code 1" in workflow_content
 
 
 def test_node_project_includes_security_configuration(tmp_path):
@@ -523,7 +523,7 @@ def test_node_project_includes_security_configuration(tmp_path):
 
     workflow_content = workflow.read_text()
 
-    assert "trivy-action" in workflow_content
-    assert "scan-type: fs" in workflow_content
+    assert "aquasecurity/trivy" in workflow_content
+    assert "fs --severity CRITICAL,HIGH" in workflow_content
     assert "CRITICAL,HIGH" in workflow_content
-    assert "exit-code: 1" in workflow_content
+    assert "--exit-code 1" in workflow_content
