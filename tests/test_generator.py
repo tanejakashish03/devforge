@@ -309,7 +309,7 @@ def test_node_project_includes_docker_configuration(tmp_path):
     assert "FROM node:24-alpine" in dockerfile_content
     assert "npm ci" in dockerfile_content
     assert "EXPOSE 3000" in dockerfile_content
-    assert 'CMD ["npm", "start"]' in dockerfile_content
+    assert 'CMD ["node", "src/index.js"]' in dockerfile_content
 
     assert "node_modules" in dockerignore_content
     assert "npm-debug.log" in dockerignore_content
