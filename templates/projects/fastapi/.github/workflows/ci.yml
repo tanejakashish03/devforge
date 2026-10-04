@@ -39,7 +39,7 @@ jobs:
             fs --severity CRITICAL,HIGH --exit-code 1 --ignore-unfixed --no-progress .
 
       - name: Log in to GitHub Container Registry
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -62,7 +62,7 @@ jobs:
             image --severity CRITICAL,HIGH --exit-code 1 --ignore-unfixed --no-progress "$REGISTRY/$IMAGE_NAME:latest"
 
       - name: Push Docker image
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
         env:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
         run: |
