@@ -2,6 +2,9 @@ import os
 import base64
 from pathlib import Path
 
+import logging
+from urllib.parse import quote
+
 import requests
 
 
@@ -247,7 +250,60 @@ def upload_project_directory(
     return uploaded_files
 
 
+def delete_container_package(package_name):
+    """Delete the GHCR package a project's CI published. Best effort.
+
+    GitHub keeps a container package after its repo is deleted, and a new
+    repo with the same name then cannot push to it. The Packages API
+    rejects fine-grained tokens, so this uses PACKAGES_TOKEN, a classic
+    token with only read:packages and delete:packages.
+    """
+    token = os.getenv("PACKAGES_TOKEN")
+
+    if not token:
+        logging.warning(
+            "PACKAGES_TOKEN is not set; skipping cleanup of package %s",
+            package_name,
+        )
+        return False
+
+    url = (
+        f"{GITHUB_API_URL}/user/packages/container/"
+        f"{quote(package_name.lower(), safe='')}"
+    )
+
+    response = requests.delete(
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {token}",
+            "X-GitHub-Api-Version": "2026-03-10",
+        },
+        timeout=30,
+    )
+
+    if response.status_code in (204, 404):  # deleted, or never existed
+        return True
+
+    logging.warning(
+        "Could not delete package %s: %s %s",
+        package_name,
+        response.status_code,
+        response.text,
+    )
+    return False
+
+
 def delete_repository(owner, repository_name):
+    try:
+        delete_container_package(repository_name)
+    except Exception:
+        logging.exception("Package cleanup failed for %s", repository_name)
+
+    return _delete_repository_only(owner, repository_name)
+
+
+def _delete_repository_only(owner, repository_name):
     token = os.getenv("GITHUB_TOKEN")
 
     if not token:
