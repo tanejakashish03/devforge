@@ -112,3 +112,32 @@
     - name: Build image and start DevForge
       ansible.builtin.command: /opt/devforge/repo/scripts/deploy.sh
       become_user: ubuntu
+
+    - name: Install DevForge NGINX site config
+      ansible.builtin.copy:
+        src: /opt/devforge/repo/nginx/devforge.conf
+        dest: /etc/nginx/sites-available/devforge
+        remote_src: true
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable DevForge NGINX site
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/devforge
+        dest: /etc/nginx/sites-enabled/devforge
+        state: link
+
+    - name: Disable the default NGINX site
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Validate NGINX configuration
+      ansible.builtin.command: nginx -t
+      changed_when: false
+
+    - name: Reload NGINX
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
