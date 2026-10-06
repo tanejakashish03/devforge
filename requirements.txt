@@ -15,7 +15,7 @@ packaging==26.3
 pluggy==1.6.0
 Pygments==2.20.0
 pytest==9.1.1
-python-dotenv==1.2.2
+python-dotenv==1.2.4
 requests==2.34.2
 SQLAlchemy==2.0.52
 typing_extensions==4.16.0
